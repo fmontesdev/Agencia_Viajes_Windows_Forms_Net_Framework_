@@ -6,7 +6,7 @@ Sistema de gestión para agencias de viajes desarrollado en **Windows Forms** co
 
 Gestionar clientes, viajes y reservas de una agencia de viajes mediante una interfaz gráfica intuitiva con operaciones CRUD completas.
 
-## Arquitectura
+## Arquitectura MVC
 
 - **Viajes.View**: Interfaz de usuario (Windows Forms)
 - **Viajes.Controller**: Lógica de negocio (APIs,DTOs y Mappers)
@@ -58,7 +58,7 @@ Panel principal con estadísticas generales:
 
 ## Características Técnicas
 
-✅ Arquitectura en 3 capas  
+✅ Arquitectura MVC en 3 capas  
 ✅ Entity Framework para acceso a datos  
 ✅ Operaciones asíncronas (async/await)  
 ✅ Patrón Repository  
