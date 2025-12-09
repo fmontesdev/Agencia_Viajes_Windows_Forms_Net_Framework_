@@ -275,27 +275,29 @@ namespace Viajes.View
             // Using asegura que se libere la memoria al cerrar el formulario
             using (Form frmNuevaReserva = new FrmNuevaReserva(_reservasApi))
             {
-                frmNuevaReserva.ShowDialog();
-            }
-
-            try
-            {
-                // Recarga la lista de reservas desde la base de datos
-                await CargarReservas();
-                // Refresca el DataGridView
-                RefrescarGrid();
-                // Actualiza el total de clientes
-                ActualizarTotal();
-                // Muestra mensaje de éxito en el status strip
-                await MostrarMensajeTemporalAsync("Reserva creada corréctamente");
-            }
-            catch (SqlException ex)
-            {
-                UiHelpers.MostrarErrorSql(ex);
-            }
-            catch (Exception ex)
-            {
-                UiHelpers.MostrarError(ex);
+                var result = frmNuevaReserva.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Recarga la lista de reservas desde la base de datos
+                        await CargarReservas();
+                        // Refresca el DataGridView
+                        RefrescarGrid();
+                        // Actualiza el total de clientes
+                        ActualizarTotal();
+                        // Muestra mensaje de éxito en el status strip
+                        await MostrarMensajeTemporalAsync("Reserva creada corréctamente");
+                    }
+                    catch (SqlException ex)
+                    {
+                        UiHelpers.MostrarErrorSql(ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        UiHelpers.MostrarError(ex);
+                    }
+                }
             }
         }
 

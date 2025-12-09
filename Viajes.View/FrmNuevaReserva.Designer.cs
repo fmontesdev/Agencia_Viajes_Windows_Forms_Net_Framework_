@@ -100,14 +100,14 @@
             // 
             // cbClienteReserva
             // 
-            this.cbClienteReserva.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cbClienteReserva.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.cbClienteReserva.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbClienteReserva.FormattingEnabled = true;
             this.cbClienteReserva.Location = new System.Drawing.Point(108, 29);
             this.cbClienteReserva.Name = "cbClienteReserva";
             this.cbClienteReserva.Size = new System.Drawing.Size(330, 31);
             this.cbClienteReserva.TabIndex = 1;
+            this.cbClienteReserva.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cbClienteReserva_KeyUp);
+            this.cbClienteReserva.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cbClienteReserva_MouseDown);
             // 
             // cbViajeReserva
             // 
@@ -119,6 +119,8 @@
             this.cbViajeReserva.Name = "cbViajeReserva";
             this.cbViajeReserva.Size = new System.Drawing.Size(330, 31);
             this.cbViajeReserva.TabIndex = 2;
+            this.cbViajeReserva.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cbViajeReserva_KeyUp);
+            this.cbViajeReserva.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cbViajeReserva_MouseDown);
             // 
             // dtpFechaReserva
             // 

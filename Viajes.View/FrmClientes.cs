@@ -224,27 +224,29 @@ namespace Viajes.View
             // Using asegura que se libere la memoria al cerrar el formulario
             using (Form frmNuevoCliente = new FrmNuevoCliente(_clientesApi))
             {
-                frmNuevoCliente.ShowDialog();
-            }
-
-            try
-            {
-                // Recarga la lista de clientes desde la base de datos
-                await CargarClientes();
-                // Refresca el DataGridView
-                RefrescarGrid();
-                // Actualiza el total de clientes
-                ActualizarTotal();
-                // Muestra mensaje de éxito en el status strip
-                await MostrarMensajeTemporalAsync("Cliente creado corréctamente");
-            }
-            catch (SqlException ex)
-            {
-                UiHelpers.MostrarErrorSql(ex);
-            }
-            catch (Exception ex)
-            {
-                UiHelpers.MostrarError(ex);
+                var result = frmNuevoCliente.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Recarga la lista de clientes desde la base de datos
+                        await CargarClientes();
+                        // Refresca el DataGridView
+                        RefrescarGrid();
+                        // Actualiza el total de clientes
+                        ActualizarTotal();
+                        // Muestra mensaje de éxito en el status strip
+                        await MostrarMensajeTemporalAsync("Cliente creado corréctamente");
+                    }
+                    catch (SqlException ex)
+                    {
+                        UiHelpers.MostrarErrorSql(ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        UiHelpers.MostrarError(ex);
+                    }
+                }
             }
         }
 

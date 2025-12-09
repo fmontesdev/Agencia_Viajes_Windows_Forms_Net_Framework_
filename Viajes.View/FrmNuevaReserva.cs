@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viajes.Controller;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Viajes.View
 {
@@ -18,6 +20,9 @@ namespace Viajes.View
         private readonly ReservasAPI _reservasApi;
         private readonly ClientesAPI _clientesApi = new ClientesAPI();
         private readonly ViajesAPI _viajesApi = new ViajesAPI();
+        // Listas locales
+        private List<ClienteDto> _clientes = new List<ClienteDto>();
+        private List<ViajeDto> _viajes = new List<ViajeDto>();
 
         public FrmNuevaReserva(ReservasAPI reservasApi)
         {
@@ -40,8 +45,8 @@ namespace Viajes.View
         {
             try
             {
-                List<ClienteDto> clientes = await _clientesApi.ObtenerClientesAsync();
-                cbClienteReserva.DataSource = clientes; // Fuente de datos
+                _clientes = await _clientesApi.ObtenerClientesAsync();
+                cbClienteReserva.DataSource = _clientes; // Fuente de datos
                 cbClienteReserva.DisplayMember = "NombreCompleto"; // Lo que se ve en el ComboBox
                 cbClienteReserva.ValueMember = "IdCliente"; // El valor asociado a cada ítem
             }
@@ -60,8 +65,8 @@ namespace Viajes.View
         {
             try
             {
-                List<ViajeDto> viajes = await _viajesApi.ObtenerViajesAsync();
-                cbViajeReserva.DataSource = viajes.Where(v => v.PlazasDisponibles > 0).ToList(); // Fuente de datos
+                _viajes = await _viajesApi.ObtenerViajesAsync();
+                cbViajeReserva.DataSource = _viajes.Where(v => v.PlazasDisponibles > 0).ToList(); // Fuente de datos
                 cbViajeReserva.DisplayMember = "Destino"; // Lo que se ve en el ComboBox
                 cbViajeReserva.ValueMember = "IdViaje"; // El valor asociado a cada ítem
             }
@@ -75,6 +80,89 @@ namespace Viajes.View
             }
         }
 
+        // Evento para la selección del cliente al hacer click en el ComboBox
+        private void cbClienteReserva_MouseDown(object sender, MouseEventArgs e)
+        {
+            cbClienteReserva.SelectAll();
+        }
+
+        // Evento para filtrar los clientes al escribir en el ComboBox
+        private void cbClienteReserva_KeyUp(object sender, KeyEventArgs e)
+        {
+            // Obtiene los criterios de filtrado
+            string criterioCliente = cbClienteReserva.Text;
+
+            List<ClienteDto> listaMostrar;
+
+            // Si no hay criterio, muestra todas las reservas
+            if (string.IsNullOrEmpty(criterioCliente))
+            {
+                listaMostrar = _clientes;
+            }
+            else
+            {
+                listaMostrar = _clientes
+                    .Where(c => c.NombreCompleto.ToUpper().Contains(criterioCliente.Trim().ToUpper()))
+                    .ToList();
+            }
+
+            // Vuelve a asignar el origen de datos
+            cbClienteReserva.DataSource = listaMostrar;
+
+            // Vuelve a poner el texto escrito
+            cbClienteReserva.DroppedDown = true;
+            cbClienteReserva.Text = criterioCliente;
+
+            // Pone el cursor al final del texto y selecciona lo escrito
+            cbClienteReserva.SelectionStart = criterioCliente.Length;
+            cbClienteReserva.SelectionLength = criterioCliente.Length;
+
+            // Si no hay resultados, limpia la selección
+            if (listaMostrar.Count == 0) cbClienteReserva.SelectedIndex = -1;
+        }
+
+        // Evento para la selección del viaje al hacer click en el ComboBox
+        private void cbViajeReserva_MouseDown(object sender, MouseEventArgs e)
+        {
+            cbViajeReserva.SelectAll();
+        }
+
+        // Evento para filtrar los viajes al escribir en el ComboBox
+        private void cbViajeReserva_KeyUp(object sender, KeyEventArgs e)
+        {
+            // Obtiene los criterios de filtrado
+            string criterioViaje = cbViajeReserva.Text;
+
+            List<ViajeDto> listaMostrar;
+
+            // Si no hay criterio, muestra todas las reservas
+            if (string.IsNullOrEmpty(criterioViaje))
+            {
+                listaMostrar = _viajes;
+            }
+            else
+            {
+                listaMostrar = _viajes
+                    .Where(v => v.Destino.ToUpper().Contains(criterioViaje.Trim().ToUpper()))
+                    .ToList();
+            }
+
+            // Vuelve a asignar el origen de datos
+            cbViajeReserva.DataSource = listaMostrar;
+
+            // Vuelve a poner el texto escrito
+            cbViajeReserva.DroppedDown = true;
+            cbViajeReserva.Text = criterioViaje;
+
+            // Pone el cursor al final del texto y selecciona lo escrito
+            cbViajeReserva.SelectionStart = criterioViaje.Length;
+            cbViajeReserva.SelectionLength = criterioViaje.Length;
+
+            // Si no hay resultados, limpia la selección
+            if (listaMostrar.Count == 0) cbClienteReserva.SelectedIndex = -1;
+        }
+
+        // Evento click del botón para agregar la reserva
         private async void AgregarReserva_Click(object sender, EventArgs e)
         {
             // Valida formulario y crea la reserva
@@ -90,6 +178,7 @@ namespace Viajes.View
                     });
 
                     // Cierra el formulario
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
                 catch (SqlException ex)

@@ -39,6 +39,7 @@ namespace Viajes.View
                     });
 
                     // Cierra el formulario
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
                 catch (SqlException ex)
